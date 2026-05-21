@@ -3,484 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>塑膠不是唯一的問題，無知才是真殺手：揭開太平洋垃圾帶的秘密｜科學傳播 SDGs 14</title>
-    <!-- 引入 Google Fonts 提升排版質感 -->
+    <title>海洋保育不只是把海變乾淨：從鯨落、珊瑚到微塑膠，解構 SDGs 14 的系統工程｜泛科學 PanSci 觀點</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* 全域變數與基礎設定 */
         :root {
-            --primary-color: #005B96;
-            --accent-color: #d35400;
-            --text-main: #2c3e50;
-            --text-light: #7f8c8d;
-            --bg-glass: rgba(255, 255, 255, 0.95);
+            --pansci-blue: #005B96;
+            --pansci-orange: #f39c12; /* 珊瑚橘重點色 */
+            --sdg14-green: #00aed9; /* SDG 14 標準色調 */
+            --deep-sea: #011627;
+            --text-dark: #2c3e50;
+            --glass-bg: rgba(255, 255, 255, 0.94);
         }
 
+        /* 高質感深海背景與動態波紋感 */
         body {
             font-family: 'Noto Sans TC', sans-serif;
             line-height: 1.8;
-            color: var(--text-main);
+            color: var(--text-dark);
             margin: 0;
             padding: 0;
-            /* 動態感深海漸層背景 */
-            background: linear-gradient(135deg, #010a15 0%, #03396C 40%, #005B96 80%, #6497B1 100%);
+            background: linear-gradient(180deg, #02111d 0%, #03396c 30%, #005b96 70%, #051937 100%);
             background-attachment: fixed;
         }
 
-        /* 頂部導航列 */
-        header {
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        /* 導覽列 */
+        nav {
+            background: #fff;
+            padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.2);
         }
-
-        .nav-container {
+        .nav-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 20px;
         }
+        .logo { font-size: 22px; font-weight: 900; color: var(--pansci-blue); text-decoration: none; }
+        .logo span { color: var(--pansci-orange); }
 
-        .logo {
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--primary-color);
-            text-decoration: none;
-            letter-spacing: 1px;
-        }
-
-        .logo span { color: var(--accent-color); }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-main);
-            margin-left: 25px;
-            font-weight: 700;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover { color: var(--accent-color); }
-
-        /* 主要網頁佈局：使用 CSS Grid 分配主文與側邊欄 */
-        .main-wrapper {
+        /* 主佈局 */
+        .wrapper {
             max-width: 1200px;
             margin: 40px auto;
-            padding: 0 20px;
             display: grid;
-            grid-template-columns: 3fr 1fr;
+            grid-template-columns: 8fr 3fr;
             gap: 30px;
+            padding: 0 20px;
         }
 
-        /* 左側：文章主體容器 */
-        .article-container {
-            background-color: var(--bg-glass);
-            padding: 50px 60px;
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        /* 文章本體 */
+        article {
+            background: var(--glass-bg);
+            padding: 60px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             backdrop-filter: blur(10px);
         }
 
-        /* 右側：側邊欄容器 */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-
-        .sidebar-widget {
-            background-color: var(--bg-glass);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .sidebar-widget h3 {
-            margin-top: 0;
-            border-bottom: 3px solid var(--primary-color);
-            padding-bottom: 10px;
-            font-size: 18px;
-            color: #111;
-        }
-
-        .sidebar-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar-list li {
-            margin-bottom: 15px;
-            line-height: 1.5;
-        }
-
-        .sidebar-list a {
-            text-decoration: none;
-            color: var(--text-main);
-            font-size: 15px;
-            transition: color 0.2s;
-        }
-
-        .sidebar-list a:hover { color: var(--accent-color); font-weight: bold; }
-
-        /* 文章標題與中介資料 */
-        .category {
-            color: var(--primary-color);
+        .category-tag {
+            color: var(--sdg14-green);
             font-weight: 700;
-            font-size: 15px;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: block;
         }
 
         h1 {
-            font-size: 38px;
+            font-size: 36px;
             font-weight: 900;
-            line-height: 1.3;
+            line-height: 1.4;
             margin-top: 0;
-            margin-bottom: 25px;
             color: #1a1a1a;
         }
 
-        .meta-info {
-            font-size: 15px;
-            color: var(--text-light);
-            margin-bottom: 30px;
+        .post-meta {
+            font-size: 14px;
+            color: #666;
+            border-bottom: 1px solid #ddd;
             padding-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 30px;
             display: flex;
-            align-items: center;
-            flex-wrap: wrap;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
-        .author-name { color: var(--accent-color); font-weight: bold; }
-
-        /* 內文樣式 */
-        p {
-            font-size: 18px;
-            margin-bottom: 28px;
-            text-align: justify;
-            letter-spacing: 0.8px;
-        }
-
+        /* 泛科學風格：問題 -> 科學 -> 行動 */
         h2 {
-            font-size: 28px;
-            font-weight: 900;
-            margin-top: 60px;
-            margin-bottom: 25px;
-            border-left: 8px solid var(--accent-color);
-            padding-left: 20px;
-            color: #111111;
-            background: linear-gradient(to right, rgba(211, 84, 0, 0.1), transparent);
-            padding-top: 5px;
-            padding-bottom: 5px;
+            font-size: 26px;
+            border-left: 6px solid var(--pansci-orange);
+            padding-left: 15px;
+            margin-top: 50px;
+            color: #111;
         }
 
         h3 {
+            color: var(--pansci-blue);
             font-size: 22px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-top: 40px;
-            margin-bottom: 15px;
+            margin-top: 30px;
         }
 
-        /* 視覺素材：圖片佔位與圖說 */
-        .image-box {
-            margin: 40px 0;
-        }
-        
-        .img-placeholder {
-            width: 100%;
-            height: 400px;
-            background: #e0e6ed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #888;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #c0d1e3;
-        }
+        p { font-size: 18px; margin-bottom: 25px; text-align: justify; }
 
-        .caption {
-            font-size: 14px;
-            color: var(--text-light);
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        /* 區塊引述 */
-        blockquote {
-            background-color: #f8f9fa;
-            border-left: 5px solid var(--accent-color);
-            margin: 45px 0;
+        /* 圖片與資訊圖表佔位 */
+        .infographic {
+            background: #eef2f7;
+            border: 2px dashed #cbd5e0;
             padding: 30px;
-            font-size: 20px;
-            line-height: 1.7;
-            font-style: italic;
-            border-radius: 0 10px 10px 0;
-            color: #444;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
-        }
-
-        /* 泛科學標誌性的廣告分隔線 */
-        .ad-break {
             text-align: center;
-            color: #aaa;
-            font-size: 13px;
-            margin: 50px 0;
-            border-top: 1px dashed #ccc;
-            border-bottom: 1px dashed #ccc;
-            padding: 15px 0;
-            letter-spacing: 3px;
-            background-color: rgba(0,0,0,0.01);
+            border-radius: 12px;
+            margin: 35px 0;
+        }
+        .infographic i { font-size: 40px; color: var(--pansci-blue); margin-bottom: 10px; }
+
+        /* 側邊欄 */
+        aside { display: flex; flex-direction: column; gap: 25px; }
+        .widget {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .widget h4 { margin-top: 0; border-bottom: 2px solid var(--pansci-blue); padding-bottom: 8px; }
+
+        /* 泛科學特有：廣告與小提醒 */
+        .ad-space {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            padding: 15px;
+            border: 1px solid #eee;
+            margin: 40px 0;
+            background: #fafafa;
         }
 
-        /* 標籤設計 */
-        .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 40px; }
-        .tags span {
-            background-color: #edf2f7;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 14px;
-            color: var(--primary-color);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: bold;
+        /* 行動地圖卡片 */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
         }
-        .tags span:hover {
-            background-color: var(--primary-color);
-            color: #fff;
+        .action-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
         }
+        .action-card strong { color: var(--pansci-orange); display: block; margin-bottom: 5px; }
 
-        /* 頁腳 */
         footer {
-            background-color: #111;
-            color: #fff;
+            background: var(--deep-sea);
+            color: white;
+            padding: 60px 20px;
             text-align: center;
-            padding: 40px 20px;
-            margin-top: 60px;
-            font-size: 14px;
+            margin-top: 50px;
         }
 
-        /* 響應式設計 (Mobile/Tablet) */
-        @media (max-width: 992px) {
-            .main-wrapper { grid-template-columns: 1fr; }
-            .article-container { padding: 40px 30px; }
-            h1 { font-size: 32px; }
-        }
-        
-        @media (max-width: 600px) {
-            .article-container { padding: 30px 20px; }
-            h1 { font-size: 28px; }
-            h2 { font-size: 24px; }
-            p { font-size: 17px; }
-            .img-placeholder { height: 250px; }
-            .nav-links { display: none; } /* 簡單隱藏手機版導航列 */
+        @media (max-width: 900px) {
+            .wrapper { grid-template-columns: 1fr; }
+            article { padding: 30px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 頂部導航列 -->
-    <header>
-        <div class="nav-container">
-            <a href="#" class="logo">Ocean<span>Sci</span> 泛海洋科普</a>
-            <div class="nav-links">
-                <a href="#">首頁</a>
-                <a href="#">環境與氣候</a>
-                <a href="#">SDGs 專區</a>
-                <a href="#">專題報導</a>
-                <a href="#">訂閱電子報</a>
-            </div>
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">PanSci <span>泛科學觀點</span></a>
+            <div style="font-size: 14px; font-weight: bold;">SDGs 專題系列：海洋生態篇</div>
         </div>
-    </header>
+    </nav>
 
-    <!-- 網頁主要佈局 (CSS Grid) -->
-    <div class="main-wrapper">
-        
-        <!-- 左側：文章主體 -->
-        <main class="article-container">
-            <div class="category">地球脈動 ｜ SDGs 14 特別企劃</div>
-            
-            <h1>塑膠不是唯一的問題，無知才是真殺手：查爾斯．摩爾如何揭開太平洋垃圾帶的秘密？</h1>
-            
-            <div class="meta-info">
-                <span class="author-name">作者／環境資訊深度小組</span>
-                <span>・2026/05/21</span>
-                <span>・字數 8,532 字</span>
-                <span>・閱讀時間約 20 分鐘</span>
-                <span>・SR值 680 (高難度)</span>
-                <span style="color: var(--accent-color); cursor: pointer; font-weight: bold; border: 1px solid var(--accent-color); padding: 2px 8px; border-radius: 4px;">＋追蹤作者</span>
-            </div>
+    <div class="wrapper">
+        <main>
+            <article>
+                <span class="category-tag">#水下生命 #永續行動 #微塑膠</span>
+                <h1>從「鯨落、塑膠垃圾、珊瑚礁」看見 SDGs 下的海洋危機與行動</h1>
+                
+                <div class="post-meta">
+                    <span><strong>作者：第 3 組（江珩睿、何彥寬、劉宥鋒、陳義豐、陳品任）</strong></span>
+                    <span>・2026/05/25 發表</span>
+                    <span>・深度科普專題</span>
+                    <span>・閱讀時間約 15 分鐘</span>
+                </div>
 
-            <p>
-                在 1997 年的一場跨太平洋帆船比賽（Transpac）結束後，發生了一件永遠改變人類海洋觀測史的事件。這不是關於誰打破了最快航行紀錄，而是一位熱愛海洋的美國船長，在偏離傳統航線的歸途中，意外闖入了一個沒有任何海圖標記、面積巨大到令人窒息的「新大陸」。
-            </p>
+                <p>
+                    說到海洋保育，你的腦海中是否浮現出志工在沙灘上撿拾寶特瓶的畫面？在泛科學的視角裡，海洋保育遠不止於此。它不是一場單純的「大掃除」，而是一項複雜的系統工程。當我們談論聯合國永續發展目標 **SDG 14：水下生命** 時，我們必須將視線從海面移向深海，從單一物種移向整個生態網絡。
+                </p>
 
-            <p>
-                這位船長就是查爾斯．摩爾（Charles Moore）。他所發現的，不是佈滿珊瑚與黃金的夢幻島嶼，而是一片由人類親手打造的末日惡夢——也就是後來震驚全球科學界的**「太平洋垃圾帶」（Great Pacific Garbage Patch, GPGP）**。
-            </p>
+                <div class="ad-space">----- 廣告，請繼續往下閱讀 -----</div>
 
-            <p>
-                這是一部屬於全人類的環境警世錄。在那個塑膠工業大行其道、拋棄式消費主義被視為「現代化象徵」的 20 世紀末，查爾斯如何衝破主流科學界的忽視，為聯合國永續發展目標「SDGs 14：保育海洋生態」敲響了第一聲最響亮的警鐘？讓我們從那趟長達七天的地獄般航行說起。
-            </p>
+                <h2>觀點一：海洋是會循環的生命系統——深海裡的盛宴「鯨落」</h2>
+                <p>
+                    在泛科學的敘事公式裡，我們習慣「先講故事，再講科學」。想像一頭在藍海中游動數十年的巨鯨，當它生命的時鐘停止，巨大的軀體沉入數千公尺深的漆黑海底——這就是著名的**「鯨落」（Whale Fall）**。
+                </p>
+                <p>
+                    這不是一場悲劇，而是一場跨越百年的深海盛宴。鯨魚腐爛的過程為貧瘠的深海提供了巨大的能量資產：
+                </p>
+                <ul>
+                    <li><strong>物質循環：</strong>將淺海的營養物質輸送至深海。</li>
+                    <li><strong>形成棲地：</strong>鯨骨能成為數百種特有生物的家園。</li>
+                </ul>
+                <p>
+                    這讓我們建立第一個核心觀念：海洋生態不是單一動物的生存，而是能量、棲地與物種互相連動的複雜網絡。保護海洋，就是保護這套系統的運轉。
+                </p>
 
-            <div class="image-box">
-                <div class="img-placeholder">[圖解：北太平洋副熱帶環流（North Pacific Subtropical Gyre）的洋流路線與垃圾聚集區]</div>
-                <div class="caption">由四大洋流交匯形成的「太平洋垃圾帶」，面積大約是台灣的 44 倍大。圖／OceanSci 資料庫</div>
-            </div>
+                <div class="infographic">
+                    <i class="fa-solid fa-fish-fins"></i>
+                    <p><strong>科學筆記：</strong>鯨落、珊瑚礁與塑膠垃圾都在提醒我們：海洋是整套互相連動的生命網。</p>
+                </div>
 
-            <div class="ad-break">-----廣告，請繼續往下閱讀-----</div>
+                <h2>觀點二：海洋裡的熱帶雨林——珊瑚礁與共生機制</h2>
+                <p>
+                    珊瑚礁只佔海洋面積的不到 0.1%，卻供養了 25% 的海洋生物。為什麼它如此重要？因為它是高生物多樣性的「核心棲地」。
+                </p>
+                <p>
+                    珊瑚與共生藻之間有著精妙的互利關係。然而，當氣候變遷引發海溫升高（SDG 13），共生藻因壓力離開，珊瑚便會面臨**「白化」**。這不只是視覺上的衰亡，更是整個海洋食物網基礎的崩塌。保護珊瑚礁，不是為了保護「漂亮風景」，而是為了保住魚、蝦、蟹、貝類的避風港。
+                </p>
 
-            <h2>海洋物理學的陷阱：為什麼垃圾會全部跑到這裡？</h2>
+                <div class="ad-space">----- 廣告，請繼續往下閱讀 -----</div>
 
-            <p>
-                要理解查爾斯的發現有多麼不可思議，我們必須先上一堂基礎的海洋物理學。地球的自轉產生了「科氏力」（Coriolis effect），配合著全球風系的吹拂，在北太平洋形成了一個巨大的順時針漩渦，科學家稱之為**北太平洋副熱帶環流（North Pacific Subtropical Gyre）**。
-            </p>
+                <h2>危機：從大吸管到看不見的「微塑膠」</h2>
+                <p>
+                    泛科學核心提醒：**不要把「清理海洋」想得太浪漫。**
+                </p>
+                <p>
+                    垃圾一旦進入海洋，受到風、浪、洋流的物理作用會迅速粉碎成「微塑膠」。這些微小顆粒極難回收，且會吸附毒物進入食物網累積。
+                </p>
+                <h3>為什麼「海洋吸塵器」有其限制？</h3>
+                <p>
+                    雖然科技令人興奮，但現實很殘酷：
+                </p>
+                <ul>
+                    <li>洋流與風力的方向不一，收集效率不穩定。</li>
+                    <li>海上設備維修成本極高。</li>
+                    <li><strong>結論：少一件垃圾進海，比在海上撈一件垃圾更關鍵。</strong></li>
+                </ul>
 
-            <p>
-                這個環流的邊緣水流湍急，但它的「中心地帶」卻是一片高壓籠罩、無風無浪的死寂海域。在帆船時代，水手們將這裡稱為「海洋沙漠」，因為一旦駛入這片海域，帆船就會因為失去風力而被困住數週甚至數月。因此，這條路線是航海家們避之唯恐不及的禁區。
-            </p>
+                <div class="infographic" style="border-color: var(--pansci-orange);">
+                    <i class="fa-solid fa-triangle-exclamation" style="color: var(--pansci-orange);"></i>
+                    <p><strong>重點：</strong>末端清理很重要，但找對「源頭減量」才是科學上的真解方。</p>
+                </div>
 
-            <p>
-                然而，洋流就像是一條條巨大的全球輸送帶，從亞洲東岸、北美西岸沖刷下來的塑膠垃圾，順著黑潮與加利福尼亞洋流漂流，最終全都被「掃」進了這個無風的環流中心。幾十年來，人類丟棄的垃圾在這裡不斷累積，形成了一個面積高達 160 萬平方公里（約等於三個法國大小）的垃圾濃湯。
-            </p>
+                <h2>解方地圖：當 SDGs 走入生活與校園</h2>
+                <p>
+                    海洋議題不只關於 SDG 14。它連接著 **SDG 12（責任消費）** 減少浪費，**SDG 13（氣候行動）** 減緩升溫，以及 **SDG 17（夥伴關係）** 的公民參與。
+                </p>
 
-            <h3>那場驚心動魄的七天航行</h3>
+                <div class="action-grid">
+                    <div class="action-card">
+                        <strong>個人行動</strong>
+                        友善防曬、不踩踏潮間帶、自備餐具。
+                    </div>
+                    <div class="action-card">
+                        <strong>校園倡議</strong>
+                        無塑活動、回收分類、海洋主題展覽。
+                    </div>
+                    <div class="action-card">
+                        <strong>社會參與</strong>
+                        支持海洋保護區、關注企業減塑法規。
+                    </div>
+                    <div class="action-card">
+                        <strong>公民科學</strong>
+                        參與淨灘紀錄、海廢與珊瑚觀測回報。
+                    </div>
+                </div>
 
-            <p>
-                1997 年，50 歲的查爾斯完成了比賽。為了節省時間回到加州，他大膽決定駕駛他的雙體帆船「阿爾吉塔號」（Alguita）穿越這片海洋沙漠。
-            </p>
-
-            <p>
-                「我目光所及的範圍內，全都是塑膠。」查爾斯後來在學術研討會上回憶道。不管他看向哪裡，水面上漂浮著洗髮精瓶、塑膠袋、廢棄漁網（俗稱幽靈漁具）、保麗龍，甚至還有印著 1970 年代商標的兒童玩具。船隻在沒有風的情況下緩慢滑行，他花了整整七天七夜的時間，才駛出這片令人作嘔的「垃圾湯」。
-            </p>
-
-            <div class="ad-break">-----推廣：支持獨立科學報導，加入我們的訂閱方案-----</div>
-
-            <h2>不僅是固體垃圾：隱形殺手「微塑膠」的誕生</h2>
-
-            <p>
-                回到岸上後，查爾斯立刻向科學界報告他的發現。但他迎來的卻是冷漠。當時的海洋生物學家更關注過度捕撈或石油外洩，許多學者認為「海洋這麼大，這點垃圾遲早會被稀釋或沉入海底」。
-            </p>
-
-            <p>
-                但查爾斯沒有放棄，他於 1999 年帶領團隊重返該海域進行嚴謹的科學採樣。當他們將拖網打撈上來的水樣本放在顯微鏡下觀察時，揭開了比表面漂浮垃圾更可怕的真相——**光降解（Photodegradation）帶來的微塑膠危機**。
-            </p>
-
-            <p>
-                塑膠不會像有機物那樣被微生物「生物降解」（Biodegradation），它們在海浪的物理拍打與強烈紫外線照射下，只會逐漸脆化、碎裂，變成直徑小於 5 毫米的「微塑膠」（Microplastics）。
-            </p>
-
-            <blockquote>
-                「最驚人的數據是，在我們採樣的海域中，塑膠微粒的總重量，居然是該區域浮游動物（Zooplankton）總重量的 6 倍。這意味著，這片海洋的基礎食物鏈已經被塑膠徹底入侵。」——查爾斯．摩爾 1999 年研究報告
-            </blockquote>
-
-            <div class="image-box">
-                <div class="img-placeholder">[顯微鏡照片：混雜在浮游生物中的彩色塑膠微粒]</div>
-                <div class="caption">在顯微鏡下，塑膠微粒的體積與浮游生物相近，極易遭到魚類與海鳥誤食。</div>
-            </div>
-
-            <h2>毒素的順風車：生物放大作用與人類的餐桌</h2>
-
-            <p>
-                微塑膠之所以危險，不僅是因為它會阻塞海洋生物的消化道。更致命的是，微塑膠具有高度的親脂性，它們在海水中就像是微小的海綿，會大量吸附農藥（如 DDT）、多氯聯苯（PCBs）等「持久性有機污染物」（POPs）。
-            </p>
-
-            <p>
-                當磷蝦吃下塑膠微粒，小魚吃下磷蝦，大魚再吃下小魚，這些毒素就會透過**「生物放大作用」（Biomagnification）**在掠食者體內呈指數級別累積。最終，當我們坐在高級餐廳裡享用野生鮪魚或黑鮪魚時，這些我們幾十年前丟入海中的毒性物質，就這樣完美地「物歸原主」，回到了人類的體內。
-            </p>
-
-            <div class="ad-break">-----廣告，請繼續往下閱讀-----</div>
-
-            <h2>SDGs 14：從查爾斯的警告到聯合國的行動</h2>
-
-            <p>
-                查爾斯的發現與後續二十年的不懈倡議，終於讓「海洋廢棄物」成為國際政治無法忽視的議題。為了挽救瀕臨崩潰的海洋，聯合國在 2015 年制定的「2030 永續發展目標」中，特別確立了 **SDGs 14：保育及永續利用海洋與海洋資源（Life Below Water）**。
-            </p>
-
-            <p>
-                SDGs 14 並不是一個虛無縹緲的口號，它包含了極度嚴格的科學考核指標：
-            </p>
-
-            <ul>
-                <li><strong>指標 14.1（減少海洋污染）：</strong>在 2025 年前，預防及大幅減少各類海洋污染，特別是來自陸上活動的污染，包含海洋廢棄物與營養物（優養化）污染。</li>
-                <li><strong>指標 14.2（保護沿海生態）：</strong>透過科學管理，以永續方式管理及保護海洋與海岸生態系，避免產生重大負面影響。</li>
-                <li><strong>指標 14.3（減少海洋酸化）：</strong>盡量減少並解決海洋酸化的影響，包括在各級別加強科學合作。</li>
-            </ul>
-
-            <h2>科技能拯救海洋嗎？解局的下一步</h2>
-
-            <p>
-                如今，面對太平洋垃圾帶，許多科技應運而生。例如荷蘭青年科學家柏楊．史萊特（Boyan Slat）發起的「海洋清理行動」（The Ocean Cleanup），利用巨大的 U 型攔截網結合洋流力量，大規模收集海面垃圾。
-            </p>
-
-            <p>
-                然而，查爾斯與多數科學家都強調：**「我們不可能靠著在浴缸裡撈水來防止水災，我們必須關掉水龍頭。」**
-            </p>
-            
-            <p>
-                清理海面只是治標，真正的永續發展必須回到源頭。我們需要推動「循環經濟」，制定禁止一次性塑膠的法規，並開發真正的生物可降解材料。每一次你在便利商店拒絕拿取塑膠吸管，每一次企業選擇重新設計包裝，都是在落實 SDGs 14 的精神。
-            </p>
-
-            <p>
-                人類一出生就帶著征服陸地的驕傲，但我們常常忘了，生命最初的搖籃是那片深邃的海洋。查爾斯．摩爾在偶然中揭開的恐怖真相，不是為了讓我們絕望，而是給了人類最後一次修正錯誤的機會。
-            </p>
-
-            <div class="tags">
-                <span>#SDGs目標14</span>
-                <span>#太平洋垃圾帶</span>
-                <span>#海洋科學</span>
-                <span>#微塑膠危機</span>
-                <span>#生物放大作用</span>
-                <span>#環境工程</span>
-                <span>#查爾斯摩爾</span>
-            </div>
+                <blockquote style="font-style: italic; border-left: 5px solid var(--pansci-blue); padding-left: 20px; margin: 40px 0;">
+                    「保護海洋，不是要把海變乾淨而已，而是讓人類生活不要再把海推向崩壞。」
+                </blockquote>
+            </article>
         </main>
 
-        <!-- 右側：側邊欄 (Sidebar) -->
-        <aside class="sidebar">
-            
-            <!-- 作者小檔案 -->
-            <div class="sidebar-widget">
-                <h3>關於專欄：海洋生態研究所</h3>
-                <p style="font-size: 14px; margin-bottom: 0; color: #555;">
-                    由一群跨領域的海洋生物學家、環境工程師與科學傳播者組成。我們致力於將生硬的 SDGs 指標轉化為有溫度的故事，帶領讀者深潛入海，直視當代最迫切的環境議題。
-                </p>
-            </div>
-
-            <!-- 熱門文章推薦 -->
-            <div class="sidebar-widget">
-                <h3>延伸閱讀 (熱門推薦)</h3>
-                <ul class="sidebar-list">
-                    <li><a href="#">深海採礦的代價：當我們為了電動車電池挖空海床</a></li>
-                    <li><a href="#">珊瑚白化倒數：海水升溫 1.5 度對熱帶雨林意味著什麼？</a></li>
-                    <li><a href="#">從餐桌救海洋：2026 最新版「台灣海鮮選擇指南」</a></li>
-                    <li><a href="#">打破碳匯迷思：種樹不如保護鯨魚？</a></li>
-                    <li><a href="#">化學防曬乳如何成為夏威夷珊瑚的隱形殺手？</a></li>
+        <aside>
+            <div class="widget">
+                <h4>專題報告者：第 3 組</h4>
+                <ul style="list-style: none; padding: 0; font-size: 14px; line-height: 2;">
+                    <li><strong>江珩睿：</strong>開場與 SDGs 主軸</li>
+                    <li><strong>何彥寬：</strong>鯨落與生命循環故事</li>
+                    <li><strong>劉宥鋒：</strong>塑膠垃圾與微塑膠機制</li>
+                    <li><strong>陳義豐：</strong>珊瑚礁壓力鏈與白化</li>
+                    <li><strong>陳品任：</strong>落地解方與校園行動</li>
                 </ul>
             </div>
 
-            <!-- 電子報訂閱 -->
-            <div class="sidebar-widget" style="background-color: var(--primary-color); color: white;">
-                <h3 style="color: white; border-color: rgba(255,255,255,0.3);">加入科普行動</h3>
-                <p style="font-size: 14px; color: #e0e0e0;">每週一篇深度科學報導，與我們一起追蹤全球環境變遷的最新科學進展。</p>
-                <input type="email" placeholder="輸入您的 Email" style="width: 100%; padding: 10px; box-sizing: border-box; border: none; border-radius: 4px; margin-bottom: 10px;">
-                <button style="width: 100%; padding: 10px; background-color: var(--accent-color); color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">立即免費訂閱</button>
+            <div class="widget">
+                <h4>泛科學導讀公式</h4>
+                <p style="font-size: 14px; color: #555;">
+                    1. 生活問題探討<br>
+                    2. 科學機制拆解<br>
+                    3. 永續行動落實
+                </p>
             </div>
 
+            <div class="widget" style="background: var(--sdg14-green); color: white;">
+                <h4 style="border-color: white;">相關標籤</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 5px; font-size: 12px;">
+                    <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px;">#鯨落</span>
+                    <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px;">#珊瑚白化</span>
+                    <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px;">#微塑膠</span>
+                    <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px;">#源頭減量</span>
+                </div>
+            </div>
         </aside>
-
     </div>
 
-    <!-- 網頁底端頁腳 -->
     <footer>
-        <p>© 2026 OceanSci 泛海洋科普 ｜ 致力於科學傳播與環境永續教育</p>
-        <p style="font-size: 12px; color: #888;">本網頁為 SDGs 14 海洋生態倡議示範版面，部分資料參考聯合國環境署 (UNEP) 報告。</p>
+        <p>資料來源：PanSci 泛科學、聯合國永續發展目標教育手冊、第 3 組期末報告內容整理</p>
+        <p style="font-size: 12px; color: #aaa;">© 2026 泛科學觀點模擬網頁 - 僅供學術報告使用</p>
     </footer>
 
 </body>
