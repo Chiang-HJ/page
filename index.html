@@ -3,100 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPX 隨機點位加入工具</title>
+    <title>GPX 隨機點位生成器 Pro</title>
+    <!-- 引入 Leaflet 地圖 CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
+        /* 全域樣式：現代漸層背景 */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 30px;
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #f9f9f9;
-            color: #333;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #fff;
+            overflow-x: hidden;
         }
+
+        /* 毛玻璃容器主體 */
         .container {
-            background-color: #fff;
-            padding: 20px 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 90%;
+            max-width: 700px;
+            transition: transform 0.3s ease, height 0.5s ease-out;
+            position: relative;
+            z-index: 10;
         }
+
         h2 {
             margin-top: 0;
-            color: #2c3e50;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 2.2rem;
+            letter-spacing: 1px;
         }
+
         .control-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
+
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
         }
+
+        /* 輸入框毛玻璃化 */
+        input[type="number"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
         input[type="number"] {
-            width: 100px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            width: calc(100% - 26px);
         }
-        input[type="file"] {
-            padding: 10px 0;
+
+        input[type="number"]:focus, input[type="file"]:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #a78bfa;
         }
-        button {
-            background-color: #3498db;
+
+        /* 檔案選擇器按鈕樣式 */
+        input[type="file"]::file-selector-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 15px;
+            transition: background 0.3s ease;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* 按鈕組：處理、預覽、下載 */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        button, #downloadLink {
+            flex: 1;
+            text-align: center;
+            background: linear-gradient(90deg, #1abc9c 0%, #16a085 100%);
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 4px;
+            padding: 14px 24px;
+            font-size: 1rem;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        #downloadLink {
-            display: none;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #2ecc71;
-            color: white;
-            text-align: center;
             text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.3s ease, background 0.3s ease, filter 0.3s ease;
+            box-shadow: 0 4px 15px rgba(22, 160, 133, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            filter: saturate(100%);
         }
-        #downloadLink:hover {
-            background-color: #27ae60;
+
+        button:hover, #downloadLink:hover {
+            filter: saturate(120%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(22, 160, 133, 0.5);
+        }
+
+        button:active, #downloadLink:active {
+            transform: translateY(1px);
+        }
+
+        button:disabled {
+            background: #cbd5e1;
+            box-shadow: none;
+            cursor: not-allowed;
+            color: #64748b;
+        }
+
+        /* 預覽按鈕顏色 */
+        #previewBtn {
+            background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* 下載連結樣式 */
+        #downloadLink {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            display: none;
+        }
+
+        /* 地圖容器 */
+        #map-wrapper {
+            margin-top: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            display: none;
+            height: 0;
+            transition: height 0.5s ease-out, opacity 0.5s ease-out;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+        }
+
+        #map-wrapper.show {
+            display: block;
+            height: 450px;
+            opacity: 1;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 自定義圖例 */
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* 滾動條樣式優化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>GPX 隨機點位加入工具</h2>
+    <h2>GPX 隨機點 Pro</h2>
     
     <div class="control-group">
-        <label for="gpxFile">1. 匯入 GPX 檔案：</label>
+        <label for="gpxFile">1. 匯入 GPX 檔案</label>
         <input type="file" id="gpxFile" accept=".gpx">
     </div>
     
     <div class="control-group">
-        <label for="minDist">2. 最小隨機距離 (公尺)：</label>
+        <label for="minDist">2. 最小隨機距離 (公尺)</label>
         <input type="number" id="minDist" value="20" min="0">
     </div>
     
     <div class="control-group">
-        <label for="maxDist">3. 最大隨機距離 (公尺)：</label>
+        <label for="maxDist">3. 最大隨機距離 (公尺)</label>
         <input type="number" id="maxDist" value="80" min="0">
     </div>
     
-    <button id="processBtn">處理並生成新 GPX</button>
-    
-    <a id="downloadLink">下載修改後的 GPX 檔案</a>
+    <div class="button-group">
+        <button id="processBtn">處理並生成</button>
+        <button id="previewBtn" disabled>預覽並展開地圖</button>
+        <a id="downloadLink">下載新檔案</a>
+    </div>
+
+    <!-- 地圖包裝器 -->
+    <div id="map-wrapper">
+        <div id="map"></div>
+    </div>
 </div>
 
+<!-- 引入 Leaflet 地圖 JavaScript -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
     // 地球半徑 (公尺)
     const EARTH_RADIUS = 6378137; 
+    let processedPoints = { original: [], randomized: [] };
+    let map;
 
     // 角度轉弧度
     function toRadians(degrees) {
@@ -130,17 +288,23 @@
         );
 
         return {
-            lat: toDegrees(lat2).toFixed(6), // GPX 經緯度通常保留六位小數即可
-            lon: toDegrees(lon2).toFixed(6)
+            lat: parseFloat(toDegrees(lat2).toFixed(6)), // GPX 經緯度通常保留六位小數即可
+            lon: parseFloat(toDegrees(lon2).toFixed(6))
         };
     }
 
-    document.getElementById('processBtn').addEventListener('click', () => {
-        const fileInput = document.getElementById('gpxFile');
-        const downloadLink = document.getElementById('downloadLink');
-        
-        // 隱藏之前的下載連結
+    const processBtn = document.getElementById('processBtn');
+    const previewBtn = document.getElementById('previewBtn');
+    const downloadLink = document.getElementById('downloadLink');
+    const fileInput = document.getElementById('gpxFile');
+    const mapWrapper = document.getElementById('map-wrapper');
+
+    processBtn.addEventListener('click', () => {
+        // 隱藏之前的下載連結和地圖
         downloadLink.style.display = 'none';
+        mapWrapper.classList.remove('show');
+        previewBtn.disabled = true;
+        processedPoints = { original: [], randomized: [] };
 
         if (fileInput.files.length === 0) {
             alert('請先選擇一個 GPX 檔案。');
@@ -164,7 +328,7 @@
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(xmlText, "application/xml");
 
-            // 檢查解析 XML 是否發生錯誤 (無法讀取的狀況防護)
+            // 檢查解析 XML 是否發生錯誤
             if (xmlDoc.getElementsByTagName("parsererror").length > 0) {
                 alert('檔案無法清楚讀取，這可能不是有效的 GPX 或 XML 格式。請確認檔案內容完整。');
                 return;
@@ -183,9 +347,15 @@
                     const lon = parseFloat(pt.getAttribute('lon'));
                     
                     if (!isNaN(lat) && !isNaN(lon)) {
+                        // 記錄原始點
+                        processedPoints.original.push([lat, lon]);
+
                         // 計算出偏移後的隨機點
                         const newCoords = generateRandomCoordinate(lat, lon, minDist, maxDist);
                         
+                        // 記錄隨機點
+                        processedPoints.randomized.push([newCoords.lat, newCoords.lon]);
+
                         // 複製原本的節點 (包含原本的高度 ele、時間 time 等資訊)
                         const newPt = pt.cloneNode(true);
                         
@@ -223,8 +393,11 @@
             // 更新下載按鈕
             downloadLink.href = url;
             downloadLink.download = 'Randomized_' + file.name;
-            downloadLink.textContent = `下載修改後的檔案 (${file.name})`;
+            downloadLink.textContent = `下載新檔案 (${file.name})`;
             downloadLink.style.display = 'block';
+
+            // 啟用預覽按鈕
+            previewBtn.disabled = false;
         };
 
         // 當檔案讀取發生錯誤時的處理邏輯
@@ -235,7 +408,70 @@
         // 以文字模式讀取檔案
         reader.readAsText(file);
     });
+
+    // 預覽功能核心：地圖初始化與繪製
+    previewBtn.addEventListener('click', () => {
+        if (!mapWrapper.classList.contains('show')) {
+            mapWrapper.classList.add('show');
+            initMap();
+        } else {
+            mapWrapper.classList.remove('show');
+        }
+    });
+
+    function initMap() {
+        if (!map) {
+            // 初始化地圖，設置一個默認視圖
+            map = L.map('map').setView([0, 0], 2);
+            // 添加底圖 (OpenStreetMap)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // 添加圖例
+            const legend = L.control({position: 'bottomright'});
+            legend.onAdd = function (map) {
+                const div = L.DomUtil.create('div', 'legend');
+                div.innerHTML = `
+                    <div class="legend-item"><div class="legend-color" style="background: blue;"></div>原始點位</div>
+                    <div class="legend-item"><div class="legend-color" style="background: red;"></div>隨機點位</div>
+                `;
+                return div;
+            };
+            legend.addTo(map);
+        }
+
+        // 清除舊的圖層 (如果有)
+        map.eachLayer(layer => {
+            if (layer instanceof L.Polyline || layer instanceof L.CircleMarker) {
+                map.removeLayer(layer);
+            }
+        });
+
+        const originalCoords = processedPoints.original;
+        const randomizedCoords = processedPoints.randomized;
+
+        // 檢查數據是否存在
+        if (originalCoords.length === 0) return;
+
+        // 繪製原始軌跡 (藍色)
+        const originalPolyline = L.polyline(originalCoords, {color: 'blue', weight: 3, opacity: 0.7}).addTo(map);
+        // 繪製原始點位 (藍色圓點)
+        originalCoords.forEach(coord => {
+            L.circleMarker(coord, {radius: 4, color: 'blue', fillColor: 'blue', fillOpacity: 0.7}).addTo(map);
+        });
+
+        // 繪製新軌跡 (紅色虛線)
+        const randomizedPolyline = L.polyline(randomizedCoords, {color: 'red', weight: 3, opacity: 0.7, dashArray: '5, 10'}).addTo(map);
+        // 繪製隨機點位 (紅色圓點)
+        randomizedCoords.forEach(coord => {
+            L.circleMarker(coord, {radius: 4, color: 'red', fillColor: 'red', fillOpacity: 0.7}).addTo(map);
+        });
+
+        // 將地圖自適應視圖覆蓋所有點
+        const group = new L.featureGroup([originalPolyline, randomizedPolyline]);
+        map.fitBounds(group.getBounds().pad(0.1));
+    }
 </script>
 </body>
 </html>
-
