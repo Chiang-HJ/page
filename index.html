@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPX 隨機點位生成器 Pro</title>
-    <!-- 引入 Leaflet 地圖 CSS -->
+    <title>GPX 路線連續隨機加點工具</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        /* 全域樣式：現代漸層背景 */
         body {
             font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -18,9 +16,9 @@
             margin: 0;
             color: #fff;
             overflow-x: hidden;
+            padding: 20px 0;
         }
 
-        /* 毛玻璃容器主體 */
         .container {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
@@ -31,7 +29,6 @@
             padding: 40px;
             width: 90%;
             max-width: 700px;
-            transition: transform 0.3s ease, height 0.5s ease-out;
             position: relative;
             z-index: 10;
         }
@@ -41,7 +38,7 @@
             text-align: center;
             color: #fff;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            font-size: 2.2rem;
+            font-size: 2rem;
             letter-spacing: 1px;
         }
 
@@ -57,7 +54,6 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* 輸入框毛玻璃化 */
         input[type="number"], input[type="file"] {
             width: 100%;
             padding: 12px;
@@ -68,10 +64,7 @@
             font-size: 1rem;
             outline: none;
             transition: background 0.3s ease, border-color 0.3s ease;
-        }
-
-        input[type="number"] {
-            width: calc(100% - 26px);
+            box-sizing: border-box;
         }
 
         input[type="number"]:focus, input[type="file"]:focus {
@@ -79,7 +72,6 @@
             border-color: #a78bfa;
         }
 
-        /* 檔案選擇器按鈕樣式 */
         input[type="file"]::file-selector-button {
             background: rgba(255, 255, 255, 0.2);
             color: #fff;
@@ -95,7 +87,6 @@
             background: rgba(255, 255, 255, 0.35);
         }
 
-        /* 按鈕組：處理、預覽、下載 */
         .button-group {
             display: flex;
             gap: 15px;
@@ -115,22 +106,18 @@
             cursor: pointer;
             text-decoration: none;
             font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.3s ease, background 0.3s ease, filter 0.3s ease;
+            transition: transform 0.2s, box-shadow 0.3s ease, filter 0.3s ease;
             box-shadow: 0 4px 15px rgba(22, 160, 133, 0.3);
             text-transform: uppercase;
             letter-spacing: 1px;
             display: inline-block;
-            filter: saturate(100%);
+            box-sizing: border-box;
         }
 
         button:hover, #downloadLink:hover {
             filter: saturate(120%);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(22, 160, 133, 0.5);
-        }
-
-        button:active, #downloadLink:active {
-            transform: translateY(1px);
         }
 
         button:disabled {
@@ -140,20 +127,17 @@
             color: #64748b;
         }
 
-        /* 預覽按鈕顏色 */
         #previewBtn {
             background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
         }
 
-        /* 下載連結樣式 */
         #downloadLink {
             background: linear-gradient(90deg, #10b981 0%, #059669 100%);
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
             display: none;
         }
 
-        /* 地圖容器 */
         #map-wrapper {
             margin-top: 30px;
             border-radius: 15px;
@@ -176,17 +160,12 @@
             height: 100%;
         }
 
-        /* 自定義圖例 */
         .legend {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
             background: rgba(0, 0, 0, 0.7);
             color: #fff;
             padding: 10px 15px;
             border-radius: 8px;
             font-size: 0.9rem;
-            z-index: 1000;
             backdrop-filter: blur(5px);
         }
 
@@ -203,23 +182,15 @@
             margin-right: 10px;
         }
 
-        /* 滾動條樣式優化 */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>GPX 隨機點 Pro</h2>
+    <h2>GPX 路線連續隨機加點</h2>
     
     <div class="control-group">
         <label for="gpxFile">1. 匯入 GPX 檔案</label>
@@ -227,70 +198,51 @@
     </div>
     
     <div class="control-group">
-        <label for="minDist">2. 最小隨機距離 (公尺)</label>
-        <input type="number" id="minDist" value="20" min="0">
+        <label for="minDist">2. 最小間隔距離 (公尺)</label>
+        <input type="number" id="minDist" value="20" min="1">
     </div>
     
     <div class="control-group">
-        <label for="maxDist">3. 最大隨機距離 (公尺)</label>
-        <input type="number" id="maxDist" value="80" min="0">
+        <label for="maxDist">3. 最大間隔距離 (公尺)</label>
+        <input type="number" id="maxDist" value="80" min="1">
     </div>
     
     <div class="button-group">
-        <button id="processBtn">處理並生成</button>
+        <button id="processBtn">處理並安插點位</button>
         <button id="previewBtn" disabled>預覽並展開地圖</button>
         <a id="downloadLink">下載新檔案</a>
     </div>
 
-    <!-- 地圖包裝器 -->
     <div id="map-wrapper">
         <div id="map"></div>
     </div>
 </div>
 
-<!-- 引入 Leaflet 地圖 JavaScript -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-    // 地球半徑 (公尺)
-    const EARTH_RADIUS = 6378137; 
     let processedPoints = { original: [], randomized: [] };
     let map;
 
-    // 角度轉弧度
+    // 將角度轉為弧度
     function toRadians(degrees) {
         return degrees * Math.PI / 180;
     }
 
-    // 弧度轉角度
-    function toDegrees(radians) {
-        return radians * 180 / Math.PI;
+    // Haversine 公式計算兩點間的精確球面距離 (公尺)
+    function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 6378137; // 地球半徑
+        const dLat = toRadians(lat2 - lat1);
+        const dLon = toRadians(lon2 - lon1);
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
     }
 
-    // 根據起點經緯度，以隨機距離與隨機方位角計算出新座標
-    function generateRandomCoordinate(lat, lon, minDist, maxDist) {
-        // 取得隨機距離
-        const distance = Math.random() * (maxDist - minDist) + minDist;
-        // 取得隨機方位角 (0 到 360 度，以弧度表示)
-        const bearing = Math.random() * 2 * Math.PI;
-
-        const lat1 = toRadians(lat);
-        const lon1 = toRadians(lon);
-
-        // 使用球面三角學 (Haversine formula 的反推) 計算新座標
-        const lat2 = Math.asin(
-            Math.sin(lat1) * Math.cos(distance / EARTH_RADIUS) +
-            Math.cos(lat1) * Math.sin(distance / EARTH_RADIUS) * Math.cos(bearing)
-        );
-        
-        const lon2 = lon1 + Math.atan2(
-            Math.sin(bearing) * Math.sin(distance / EARTH_RADIUS) * Math.cos(lat1),
-            Math.cos(distance / EARTH_RADIUS) - Math.sin(lat1) * Math.sin(lat2)
-        );
-
-        return {
-            lat: parseFloat(toDegrees(lat2).toFixed(6)), // GPX 經緯度通常保留六位小數即可
-            lon: parseFloat(toDegrees(lon2).toFixed(6))
-        };
+    // 取得隨機距離
+    function getRandomDist(min, max) {
+        return Math.random() * (max - min) + min;
     }
 
     const processBtn = document.getElementById('processBtn');
@@ -300,7 +252,6 @@
     const mapWrapper = document.getElementById('map-wrapper');
 
     processBtn.addEventListener('click', () => {
-        // 隱藏之前的下載連結和地圖
         downloadLink.style.display = 'none';
         mapWrapper.classList.remove('show');
         previewBtn.disabled = true;
@@ -314,102 +265,134 @@
         const minDist = parseFloat(document.getElementById('minDist').value);
         const maxDist = parseFloat(document.getElementById('maxDist').value);
         
-        if (minDist > maxDist) {
-            alert('最小距離不可大於最大距離！');
+        if (minDist > maxDist || minDist <= 0) {
+            alert('距離設定有誤，最小距離不可大於最大距離且必須大於0！');
             return;
         }
 
         const file = fileInput.files[0];
         const reader = new FileReader();
 
-        // 當檔案讀取完成時的處理邏輯
         reader.onload = function(event) {
             const xmlText = event.target.result;
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(xmlText, "application/xml");
 
-            // 檢查解析 XML 是否發生錯誤
             if (xmlDoc.getElementsByTagName("parsererror").length > 0) {
-                alert('檔案無法清楚讀取，這可能不是有效的 GPX 或 XML 格式。請確認檔案內容完整。');
+                alert('檔案無法清楚讀取，請確認檔案是否損壞。');
                 return;
             }
 
-            // 要處理的 GPX 標籤種類 (包含航點、軌跡點、路線點)
-            const pointTags = ['wpt', 'trkpt', 'rtept'];
-            
-            pointTags.forEach(tagName => {
-                const points = xmlDoc.getElementsByTagName(tagName);
-                // 必須先將 NodeList 轉為 Array，否則動態插入新節點時會導致無窮迴圈
-                const originalPoints = Array.from(points);
-                
-                originalPoints.forEach(pt => {
-                    const lat = parseFloat(pt.getAttribute('lat'));
-                    const lon = parseFloat(pt.getAttribute('lon'));
-                    
-                    if (!isNaN(lat) && !isNaN(lon)) {
-                        // 記錄原始點
-                        processedPoints.original.push([lat, lon]);
+            // 處理軌跡段 (trkseg) 與路線段 (rte)
+            const processGroup = (groupNode, tag) => {
+                // 將 NodeList 轉為陣列，避免動態插入節點時擾亂迴圈
+                const points = Array.from(groupNode.querySelectorAll(tag));
+                if (points.length < 2) return;
 
-                        // 計算出偏移後的隨機點
-                        const newCoords = generateRandomCoordinate(lat, lon, minDist, maxDist);
-                        
-                        // 記錄隨機點
-                        processedPoints.randomized.push([newCoords.lat, newCoords.lon]);
+                // 準備決定下一個插入點的隨機距離
+                let nextPointDistance = getRandomDist(minDist, maxDist);
 
-                        // 複製原本的節點 (包含原本的高度 ele、時間 time 等資訊)
-                        const newPt = pt.cloneNode(true);
-                        
-                        // 替換成新計算出的經緯度
-                        newPt.setAttribute('lat', newCoords.lat);
-                        newPt.setAttribute('lon', newCoords.lon);
-                        
-                        // 若原先節點有 <name> 標籤，幫它加上標記方便辨識
-                        const nameNode = newPt.getElementsByTagName('name')[0];
-                        if (nameNode) {
-                            nameNode.textContent = nameNode.textContent + ' (Random)';
-                        }
-                        
-                        // 將新生成的隨機點插入到原本點位的後方
-                        if (pt.parentNode) {
-                            pt.parentNode.insertBefore(newPt, pt.nextSibling);
-                        }
+                for (let i = 0; i < points.length - 1; i++) {
+                    const p1 = points[i];
+                    const p2 = points[i+1];
+
+                    const lat1 = parseFloat(p1.getAttribute('lat'));
+                    const lon1 = parseFloat(p1.getAttribute('lon'));
+                    const lat2 = parseFloat(p2.getAttribute('lat'));
+                    const lon2 = parseFloat(p2.getAttribute('lon'));
+
+                    // 記錄原始點供地圖繪製
+                    processedPoints.original.push([lat1, lon1]);
+                    if (i === points.length - 2) {
+                        processedPoints.original.push([lat2, lon2]);
                     }
-                });
-            });
 
-            // 將修改完畢的 XML 結構轉回字串
+                    // 取得這兩個原始節點之間的總距離
+                    const D = getDistance(lat1, lon1, lat2, lon2);
+                    let travelledInSegment = 0;
+
+                    // 當這段路線內還有空間塞入下一個隨機距離時
+                    while ((travelledInSegment + nextPointDistance) < D) {
+                        travelledInSegment += nextPointDistance;
+                        // 計算目前的距離佔整段線段的比例
+                        const f = travelledInSegment / D;
+
+                        // 進行線性差值計算新座標
+                        const newLat = lat1 + f * (lat2 - lat1);
+                        const newLon = lon1 + f * (lon2 - lon1);
+
+                        // 複製節點準備插入
+                        const newPt = p1.cloneNode(true);
+                        newPt.setAttribute('lat', newLat.toFixed(6));
+                        newPt.setAttribute('lon', newLon.toFixed(6));
+
+                        // 處理高度 (ele) 差值
+                        const ele1 = p1.querySelector('ele');
+                        const ele2 = p2.querySelector('ele');
+                        if (ele1 && ele2) {
+                            const e1 = parseFloat(ele1.textContent);
+                            const e2 = parseFloat(ele2.textContent);
+                            if (!isNaN(e1) && !isNaN(e2)) {
+                                newPt.querySelector('ele').textContent = (e1 + f * (e2 - e1)).toFixed(2);
+                            }
+                        }
+
+                        // 處理時間 (time) 差值
+                        const time1 = p1.querySelector('time');
+                        const time2 = p2.querySelector('time');
+                        if (time1 && time2) {
+                            const t1 = new Date(time1.textContent).getTime();
+                            const t2 = new Date(time2.textContent).getTime();
+                            if (!isNaN(t1) && !isNaN(t2)) {
+                                newPt.querySelector('time').textContent = new Date(t1 + f * (t2 - t1)).toISOString();
+                            }
+                        }
+
+                        // 標記名稱以供識別
+                        const nameNode = newPt.querySelector('name');
+                        if (nameNode) nameNode.textContent += ' (Interpolated)';
+
+                        // 插入新的點位到 DOM 中
+                        p1.parentNode.insertBefore(newPt, p2);
+                        processedPoints.randomized.push([newLat, newLon]);
+
+                        // 決定下一個插入點的隨機距離
+                        nextPointDistance = getRandomDist(minDist, maxDist);
+                    }
+                    
+                    // 扣除掉在這段路線中已經走完的距離，將剩餘需要的距離帶入到下一組線段
+                    nextPointDistance -= (D - travelledInSegment);
+                }
+            };
+
+            // 執行處理
+            xmlDoc.querySelectorAll('trkseg').forEach(seg => processGroup(seg, 'trkpt'));
+            xmlDoc.querySelectorAll('rte').forEach(rte => processGroup(rte, 'rtept'));
+
             const serializer = new XMLSerializer();
             let finalXmlString = serializer.serializeToString(xmlDoc);
             
-            // 確保檔案開頭帶有 XML 宣告
             if (!finalXmlString.trim().startsWith('<?xml')) {
                 finalXmlString = '<?xml version="1.0" encoding="UTF-8"?>\n' + finalXmlString;
             }
 
-            // 準備 Blob 物件並生成供下載的 URL
             const blob = new Blob([finalXmlString], { type: 'application/gpx+xml;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             
-            // 更新下載按鈕
             downloadLink.href = url;
-            downloadLink.download = 'Randomized_' + file.name;
+            downloadLink.download = 'Densified_Route_' + file.name;
             downloadLink.textContent = `下載新檔案 (${file.name})`;
             downloadLink.style.display = 'block';
-
-            // 啟用預覽按鈕
             previewBtn.disabled = false;
         };
 
-        // 當檔案讀取發生錯誤時的處理邏輯
         reader.onerror = function() {
             alert('讀取檔案時發生錯誤，檔案可能已損壞或無法讀取。');
         };
 
-        // 以文字模式讀取檔案
         reader.readAsText(file);
     });
 
-    // 預覽功能核心：地圖初始化與繪製
     previewBtn.addEventListener('click', () => {
         if (!mapWrapper.classList.contains('show')) {
             mapWrapper.classList.add('show');
@@ -421,56 +404,45 @@
 
     function initMap() {
         if (!map) {
-            // 初始化地圖，設置一個默認視圖
             map = L.map('map').setView([0, 0], 2);
-            // 添加底圖 (OpenStreetMap)
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
 
-            // 添加圖例
             const legend = L.control({position: 'bottomright'});
-            legend.onAdd = function (map) {
+            legend.onAdd = function () {
                 const div = L.DomUtil.create('div', 'legend');
                 div.innerHTML = `
-                    <div class="legend-item"><div class="legend-color" style="background: blue;"></div>原始點位</div>
-                    <div class="legend-item"><div class="legend-color" style="background: red;"></div>隨機點位</div>
+                    <div class="legend-item"><div class="legend-color" style="background: #3b82f6;"></div>原始路線節點</div>
+                    <div class="legend-item"><div class="legend-color" style="background: #ef4444;"></div>途中安插的新點</div>
                 `;
                 return div;
             };
             legend.addTo(map);
         }
 
-        // 清除舊的圖層 (如果有)
         map.eachLayer(layer => {
-            if (layer instanceof L.Polyline || layer instanceof L.CircleMarker) {
-                map.removeLayer(layer);
-            }
+            if (layer instanceof L.Polyline || layer instanceof L.CircleMarker) map.removeLayer(layer);
         });
 
         const originalCoords = processedPoints.original;
         const randomizedCoords = processedPoints.randomized;
-
-        // 檢查數據是否存在
         if (originalCoords.length === 0) return;
 
-        // 繪製原始軌跡 (藍色)
-        const originalPolyline = L.polyline(originalCoords, {color: 'blue', weight: 3, opacity: 0.7}).addTo(map);
-        // 繪製原始點位 (藍色圓點)
+        // 畫出基礎路線
+        const routePolyline = L.polyline(originalCoords, {color: '#8b5cf6', weight: 4, opacity: 0.8}).addTo(map);
+        
+        // 畫出原始節點
         originalCoords.forEach(coord => {
-            L.circleMarker(coord, {radius: 4, color: 'blue', fillColor: 'blue', fillOpacity: 0.7}).addTo(map);
+            L.circleMarker(coord, {radius: 4, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 1, weight: 1}).addTo(map);
         });
 
-        // 繪製新軌跡 (紅色虛線)
-        const randomizedPolyline = L.polyline(randomizedCoords, {color: 'red', weight: 3, opacity: 0.7, dashArray: '5, 10'}).addTo(map);
-        // 繪製隨機點位 (紅色圓點)
+        // 畫出安插在路線途中的新節點
         randomizedCoords.forEach(coord => {
-            L.circleMarker(coord, {radius: 4, color: 'red', fillColor: 'red', fillOpacity: 0.7}).addTo(map);
+            L.circleMarker(coord, {radius: 4, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 1, weight: 1}).addTo(map);
         });
 
-        // 將地圖自適應視圖覆蓋所有點
-        const group = new L.featureGroup([originalPolyline, randomizedPolyline]);
-        map.fitBounds(group.getBounds().pad(0.1));
+        map.fitBounds(routePolyline.getBounds().pad(0.1));
     }
 </script>
 </body>
